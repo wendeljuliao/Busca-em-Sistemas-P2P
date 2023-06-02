@@ -28,4 +28,7 @@ export const InputStyle = styled.input`
   color: black;
 
   border-radius: 100px;
+
+  outline: 0;
+  border: 0;
 `;

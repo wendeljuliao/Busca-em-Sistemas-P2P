@@ -1,9 +1,11 @@
 import { Container, CardCategory, TextCategory, Title, Content, } from './styles';
 
-/* interface ICategory {
-} */
+interface ICategory {
+  category: number;
+  setCategory: (e: any) => void;
+}
 
-export function Category(/* { }: ICategory */) {
+export function Category({ category, setCategory }: ICategory) {
   const categorys = [
     { id: 0, name: "Flooding" },
     { id: 1, name: "Informed Flooding" },
@@ -11,19 +13,24 @@ export function Category(/* { }: ICategory */) {
     { id: 3, name: "Informed Random Walk" },
   ];
 
-  const activeSortedBy = 0;
+  function handleChangeCategory(id: number) {
+    setCategory(id);
+  }
+
+  const activeCategory = category;
 
   return (
     <Container>
       <Title>Ordenar por</Title>
-      <Content>
 
+      <Content>
         {categorys.map(category =>
           <CardCategory
             key={category.id}
-            active={activeSortedBy === category.id}
+            active={category.id === activeCategory}
+            onClick={() => handleChangeCategory(category.id)}
           >
-            <TextCategory active={activeSortedBy === category.id}>
+            <TextCategory active={category.id === activeCategory}>
               {category.name}
             </TextCategory>
           </CardCategory>

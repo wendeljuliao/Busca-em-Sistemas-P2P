@@ -17,6 +17,8 @@ export function Input({ type, label, placeholder, value, setValue }: IInputProps
         type={type}
         onChange={setValue}
         placeholder={placeholder}
+        minLength={1}
+        maxLength={30}
       />
     </InputWrapper>
   )
