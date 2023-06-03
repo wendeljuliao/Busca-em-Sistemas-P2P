@@ -83,7 +83,7 @@ function App() {
         <ContentSide>
 
           <LeftSide>
-            <GraphView />
+            {fileText && <GraphView fileText={fileText} />}
 
           </LeftSide>
           <RightSide>
