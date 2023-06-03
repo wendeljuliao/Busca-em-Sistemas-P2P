@@ -4,6 +4,7 @@ import { Category } from "../components/Category"
 import { Input } from "../components/Input"
 import { ButtonStyle, Container, Content, ContentSide, LeftSide, RightSide, Title } from "./styles"
 import { validationGrafo } from '../utils/validationGrafo';
+import { GraphView } from '../components/Graph';
 
 function App() {
 
@@ -62,11 +63,15 @@ function App() {
   }
 
   function executeSearch() {
-    if (nodeID && resourceID && TTL && category) {
-      console.log("ok")
+    if (!fileText) {
+      return alert('Arquivo não selecionado.')
     }
 
-    return alert('Há campos em branco.')
+    if (!nodeID || !resourceID || !TTL) {
+      return alert('Há campos em branco.')
+    }
+
+    return console.log("ok")
   }
 
   return (
@@ -78,6 +83,7 @@ function App() {
         <ContentSide>
 
           <LeftSide>
+            <GraphView />
 
           </LeftSide>
           <RightSide>

@@ -7,10 +7,12 @@ export const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  
+  padding: 1rem;
 `;
 
 export const Content = styled.div`
-  width: 70rem;
+  width: 80rem;
   height: 50rem;
   padding: 1rem;
 
@@ -33,22 +35,28 @@ export const ContentSide = styled.div`
   display: flex;
 
   width: 100%;
+  height: 100%;
+  
   padding: 1rem;
+
+  gap: 1rem;
 `;
 
 export const LeftSide = styled.div`
   display: flex;
   
-  width: 70%;
+  width: 75%;
+  height: 100%;
 `;
 
 export const RightSide = styled.div`
   display: flex;
 
+  width: 25%;
+  height: 100%;
   flex-direction: column;
 
   gap: 10px;
-  justify-content: center;
 `;
 
 export const ButtonStyle = styled.button`
