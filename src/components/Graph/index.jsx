@@ -9,7 +9,7 @@ export function GraphView({ fileText, path}) {
             return {id: index + 1,
                     label: `Node ${index + 1}`,
                     title: '',
-                    font: {color: "yellow"}
+                    font: {color: "red"}
                 }
         }),
         edges: fileText.edges.map(edge => {
@@ -37,7 +37,7 @@ export function GraphView({ fileText, path}) {
                 border: "#222222",
                 background: "#666666"
             },
-            font: {color: "yellow"}
+            font: {color: "red"}
         },
         edges: {
             color: "yellow",
@@ -72,7 +72,7 @@ export function GraphView({ fileText, path}) {
           return {
               ...node,
               font: {
-              color: 'red'
+              color: 'white'
           }}
         });
 
@@ -87,7 +87,7 @@ export function GraphView({ fileText, path}) {
         const node = updatedGraphData.nodes.find((node) => node.id === extractedId);
 /*         const edge = updatedGraphData.edges.find((edge) => edge.from === 1);
  */
-        const updatedNode = { ...node, font: {color: 'red'} }
+        const updatedNode = { ...node, font: {color: 'white'} }
 /*         const updatedEdge = { ...edge, color: 'white', width: 3}
  */
         const updatedGraph = { 

@@ -19,6 +19,7 @@ function App() {
 
   const [fileText, setFileText] = useState();
 
+  const [nodeFound, setNodeFound] = useState([])
   const [path, setPath] = useState([])
   const [visited, setVisited] = useState(0)
 
@@ -119,6 +120,7 @@ function App() {
     }
 
     console.log(search)
+    setNodeFound(search.node)
     setPath(search.path)
     setVisited(search.visited)
 
@@ -172,6 +174,7 @@ function App() {
               <ContentPath>
                 <p>Caminho: {path.join(' => ')}</p>
                 <p>Nº de nós visitados: {visited}</p>
+                <p>{nodeFound ? `Encontrou o recurso no ${nodeFound}` : 'Recurso não encontrado'}</p>
               </ContentPath>}
           </RightSide>
         </ContentSide>
