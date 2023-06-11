@@ -22,28 +22,6 @@ export function GraphView({ fileText, path}) {
             }
         }),
       });
-    
-/*     const nodes = Array.from({ length: fileText.num_nodes }, (v, index) => {  
-        return {id: index + 1,
-                label: `Node ${index + 1}`,
-                title: ''}
-    })
-
-    const edges = fileText.edges.map(edge => {
-        const [e0, e1] = edge;
-        return {
-            from: parseInt(e0.replace('n', '').trim()),
-            to: parseInt(e1.replace('n', '').trim())
-        }
-    }) */
-
-    /* console.log(nodes)
-    console.log(edges) */
-
-    /* const graph = {
-        nodes: graphData.nodes,
-        edges: graphData.edges
-    }; */
 
     const options = {
         physics: {
@@ -121,37 +99,7 @@ export function GraphView({ fileText, path}) {
         setGraphData(updatedGraph);
       }
 
-    async function reset() {
-
-        const updatedGraphData = {
-            nodes: [...graphData.nodes],
-            edges: [...graphData.edges],
-          };
-
-        const updatedNodes = updatedGraphData.nodes.map((node) => {
-            return {
-                ...node,
-                font: {
-                color: 'yellow'
-            }}
-          });
-
-        
-        const updatedGraph = { 
-            nodes: [...updatedNodes],
-            edges: [...graphData.edges]
-            /* edges: [...updatedGraphData.edges, updatedEdge]  */
-        }
-
-        setGraphData(updatedGraph);
-    }
-
     useEffect(() => {
-        // reset();
-/*         for (let i = 0; i < path.length; i++) {
-            setInterval(animateGraph(path[i]), 1000);
-
-        } */
 
         let currentIndex = 0;
 

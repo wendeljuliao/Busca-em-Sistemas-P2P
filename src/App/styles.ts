@@ -81,3 +81,7 @@ export const ButtonStyle = styled.button`
     opacity: 0.7;
   }
 `;
+
+export const ContentPath = styled.div`
+  font-size: 1.25rem;
+`;

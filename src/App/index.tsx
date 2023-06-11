@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { Category } from "../components/Category"
 import { Input } from "../components/Input"
-import { ButtonStyle, Container, Content, ContentSide, LeftSide, RightSide, Title } from "./styles"
+import { ButtonStyle, Container, Content, ContentPath, ContentSide, LeftSide, RightSide, Title } from "./styles"
 import { validationGrafo } from '../utils/validationGrafo';
 import { GraphView } from '../components/Graph';
 import { createP2PGraph } from '../utils/util';
@@ -20,8 +20,10 @@ function App() {
   const [fileText, setFileText] = useState();
 
   const [path, setPath] = useState([])
+  const [visited, setVisited] = useState(0)
 
   function handleFileChange(event: any) {
+    setLoading(true)
     const file = event.target.files[0];
     const reader = new FileReader();
 
@@ -60,6 +62,7 @@ function App() {
       if (!validation.isValid) {
         return alert(validation.message ?? '')
       }
+      setLoading(false)
 
       setFileText(obj);
 
@@ -81,46 +84,44 @@ function App() {
 
     const p2pGraph = await createP2PGraph(fileText)
 
+    let search: any;
+
     if (category == 0) {
 
       console.log('Flooding')
 
-      const floodSearchResult: any = floodSearch(p2pGraph, nodeID, resourceID, parseInt(TTL));
-      console.log(floodSearchResult)
+      search = floodSearch(p2pGraph, nodeID, resourceID, parseInt(TTL));
 
-      setPath(floodSearchResult.path)
 
     } else if (category == 1) {
 
       console.log('Informed Flooding')
 
-      const cacheFloodSearchResult: any = cacheFloodSearch(p2pGraph, nodeID, resourceID, parseInt(TTL));
-      console.log(cacheFloodSearchResult);
+      search = cacheFloodSearch(p2pGraph, nodeID, resourceID, parseInt(TTL));
 
-      setPath(cacheFloodSearchResult.path)
 
 
     } else if (category == 2) {
 
       console.log('Random Walk')
 
-      const randomSearchResult: any = randomSearch(p2pGraph, nodeID, resourceID, parseInt(TTL));
-      console.log(randomSearchResult);
+      search = randomSearch(p2pGraph, nodeID, resourceID, parseInt(TTL));
 
-      setPath(randomSearchResult.path)
 
     } else {
 
       console.log('Informed Random Walk')
 
-      const cacheRandomSearchResult: any = cacheRandomSearch(p2pGraph, nodeID, resourceID, parseInt(TTL));
-      console.log(cacheRandomSearchResult);
+      search = cacheRandomSearch(p2pGraph, nodeID, resourceID, parseInt(TTL));
 
-      setPath(cacheRandomSearchResult.path)
 
     }
-    setLoading(false)
 
+    console.log(search)
+    setPath(search.path)
+    setVisited(search.visited)
+
+    setLoading(false)
   }
 
   return (
@@ -166,6 +167,11 @@ function App() {
 
             <ButtonStyle onClick={executeSearch}>Buscar</ButtonStyle>
 
+            {path.length > 0 &&
+              <ContentPath>
+                <p>Caminho: {path.join(' => ')}</p>
+                <p>Nº de nós visitados: {visited}</p>
+              </ContentPath>}
           </RightSide>
         </ContentSide>
       </Content>
