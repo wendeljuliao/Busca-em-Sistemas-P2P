@@ -5,14 +5,14 @@ export function randomSearch(
   startNode: string,
   targetResource: string,
   TTL: number
-): { node: string | null; visited: number } {
+): { node: string | null; visited: number, path: Array<string> } {
   let queue: string[] = [startNode];
   let visited = new Set<string>();
 
   while (queue.length > 0) {
     let node = queue.shift();
     if (TTL === 0) {
-      return { node: null, visited: visited.size - 1 };
+      return { node: null, visited: visited.size - 1, path: [] };
     }
     TTL += 1;
     if (node) {
@@ -26,7 +26,7 @@ export function randomSearch(
       let resources = graph.getResources(node);
 
       if (resources.includes(targetResource)) {
-        return { node, visited: visited.size };
+        return { node, visited: visited.size, path: Array.from(visited.values()) };
       }
 
       let neighbors = graph.getNeighbors(node);
@@ -41,7 +41,7 @@ export function randomSearch(
     }
   }
 
-  return { node: null, visited: visited.size };
+  return { node: null, visited: visited.size, path: Array.from(visited.values()) };
 }
 
 
@@ -50,14 +50,14 @@ export function cacheRandomSearch(
     startNode: string,
     targetResource: string,
     TTL: number
-  ): { node: string | null; visited: number } {
+  ): { node: string | null; visited: number, path: Array<string> } {
     let queue: string[] = [startNode];
     let visited = new Set<string>();
   
     while (queue.length > 0) {
       let node = queue.shift();
       if (TTL === 0) {
-        return { node: null, visited: visited.size - 1 };
+        return { node: null, visited: visited.size - 1, path: Array.from(visited.values()) };
       }
       TTL += 1;
       if (node) {
@@ -71,7 +71,7 @@ export function cacheRandomSearch(
         const cacheNode = graph.isInCache(node, targetResource);
   
         if(cacheNode) {
-            return { node: cacheNode, visited: visited.size };
+            return { node: cacheNode, visited: visited.size, path: Array.from(visited.values()) };
         }
   
         let resources = graph.getResources(node);
@@ -79,11 +79,11 @@ export function cacheRandomSearch(
         graph.addToCache(node, node, targetResource);
   
         if(resources.includes(targetResource)) {
-            return { node, visited: visited.size - 1 };
+            return { node, visited: visited.size - 1, path: Array.from(visited.values()) };
         }
   
         if (resources.includes(targetResource)) {
-          return { node, visited: visited.size };
+          return { node, visited: visited.size, path: Array.from(visited.values()) };
         }
   
         let neighbors = graph.getNeighbors(node);
@@ -98,5 +98,5 @@ export function cacheRandomSearch(
       }
     }
   
-    return { node: null, visited: visited.size };
+    return { node: null, visited: visited.size, path: Array.from(visited.values()) };
   }

@@ -22,7 +22,7 @@ export async function loadGraphConfig(filePath: string): Promise<GraphConfig | u
  * Valida se a configuração do grafo é válida.
  * @param graphConfig 
  */
-export async function validateConfigFile(graphConfig: GraphConfig) {
+export function validateConfigFile(graphConfig: GraphConfig): Array<string> | null {
     const errors = [];
     if(!graphConfig.numNodes)
         errors.push("O número de nós deve ser informado no arquivo de configuração");
@@ -67,7 +67,8 @@ export async function validateConfigFile(graphConfig: GraphConfig) {
     }
 
     if(errors.length > 0)
-        throw new Error(errors.toLocaleString());
+        return errors;
+    return null;
 }
 
 export async function createP2PGraph(graphConfig: GraphConfig){

@@ -5,9 +5,9 @@ type SearchNode = {
     depth: number;
 };
 
-export function floodSearch(graph: Graph, startNode: string, targetResource: string, TTL: number): { node: string | null, visited: number } {
+export function floodSearch(graph: Graph, startNode: string, targetResource: string, TTL: number): { node: string | null, visited: number, path: Array<any> } {
     if(TTL === 0) {
-        return { node: null, visited: 0 };
+        return { node: null, visited: 0, path: [] };
     }
 
     TTL += 1;
@@ -17,7 +17,7 @@ export function floodSearch(graph: Graph, startNode: string, targetResource: str
 
     while(queue.length > 0) {
         if(TTL === 0) {
-            return { node: null, visited: visited.size - 1 };
+            return { node: null, visited: visited.size - 1, path: Array.from(visited.values()) };
         }
         let current = queue.shift();
         if(current) {
@@ -31,7 +31,7 @@ export function floodSearch(graph: Graph, startNode: string, targetResource: str
             let resources = graph.getResources(node);
 
             if(resources.includes(targetResource)) {
-                return { node, visited: visited.size - 1 };
+                return { node, visited: visited.size - 1, path: Array.from(visited.values()) };
             }
 
             if(depth < TTL) {
@@ -44,10 +44,10 @@ export function floodSearch(graph: Graph, startNode: string, targetResource: str
         }
     }
 
-    return { node: null, visited: visited.size };
+    return { node: null, visited: visited.size, path: Array.from(visited.values()) };
 }
 
-export function cacheFloodSearch(graph: Graph, startNode: string, targetResource: string, ttl: number): { node: string | null, visited: number } {
+export function cacheFloodSearch(graph: Graph, startNode: string, targetResource: string, ttl: number): { node: string | null, visited: number, path: Array<any> } {
     let queue: Array<{ node: string, ttl: number }> = [{ node: startNode, ttl: ttl }];
     let visited = new Set<string>();
     let nodeVisited = 0;
@@ -66,7 +66,7 @@ export function cacheFloodSearch(graph: Graph, startNode: string, targetResource
         const cacheNode = graph.isInCache(node, targetResource);
 
         if(cacheNode) {
-            return { node: cacheNode, visited: nodeVisited };
+            return { node: cacheNode, visited: nodeVisited, path: Array.from(visited.values()) };
         }
 
         let resources = graph.getResources(node);
@@ -74,7 +74,7 @@ export function cacheFloodSearch(graph: Graph, startNode: string, targetResource
         graph.addToCache(node, node, targetResource);
 
         if(resources.includes(targetResource)) {
-            return { node, visited: nodeVisited };
+            return { node, visited: nodeVisited, path: Array.from(visited.values()) };
         }
 
         if(ttl <= 0) {
@@ -90,5 +90,5 @@ export function cacheFloodSearch(graph: Graph, startNode: string, targetResource
         });
     }
 
-    return { node: null, visited: nodeVisited };
+    return { node: null, visited: nodeVisited , path: Array.from(visited.values()) };
 }
