@@ -5,8 +5,12 @@ import { Input } from "../components/Input"
 import { ButtonStyle, Container, Content, ContentSide, LeftSide, RightSide, Title } from "./styles"
 import { validationGrafo } from '../utils/validationGrafo';
 import { GraphView } from '../components/Graph';
+import { createP2PGraph } from '../utils/util';
+import { cacheFloodSearch, floodSearch } from '../search-algorithms/flood-search';
+import { cacheRandomSearch, randomSearch } from '../search-algorithms/random-search';
 
 function App() {
+  const [loading, setLoading] = useState(false)
 
   const [nodeID, setNodeID] = useState('');
   const [resourceID, setResourceID] = useState('');
@@ -14,6 +18,8 @@ function App() {
   const [category, setCategory] = useState(0);
 
   const [fileText, setFileText] = useState();
+
+  const [path, setPath] = useState([])
 
   function handleFileChange(event: any) {
     const file = event.target.files[0];
@@ -62,7 +68,8 @@ function App() {
     reader.readAsText(file);
   }
 
-  function executeSearch() {
+  async function executeSearch() {
+    setLoading(true)
     if (!fileText) {
       return alert('Arquivo não selecionado.')
     }
@@ -71,19 +78,61 @@ function App() {
       return alert('Há campos em branco.')
     }
 
-    return console.log("ok")
+
+    const p2pGraph = await createP2PGraph(fileText)
+
+    if (category == 0) {
+
+      console.log('Flooding')
+
+      const floodSearchResult: any = floodSearch(p2pGraph, nodeID, resourceID, parseInt(TTL));
+      console.log(floodSearchResult)
+
+      setPath(floodSearchResult.path)
+
+    } else if (category == 1) {
+
+      console.log('Informed Flooding')
+
+      const cacheFloodSearchResult: any = cacheFloodSearch(p2pGraph, nodeID, resourceID, parseInt(TTL));
+      console.log(cacheFloodSearchResult);
+
+      setPath(cacheFloodSearchResult.path)
+
+
+    } else if (category == 2) {
+
+      console.log('Random Walk')
+
+      const randomSearchResult: any = randomSearch(p2pGraph, nodeID, resourceID, parseInt(TTL));
+      console.log(randomSearchResult);
+
+      setPath(randomSearchResult.path)
+
+    } else {
+
+      console.log('Informed Random Walk')
+
+      const cacheRandomSearchResult: any = cacheRandomSearch(p2pGraph, nodeID, resourceID, parseInt(TTL));
+      console.log(cacheRandomSearchResult);
+
+      setPath(cacheRandomSearchResult.path)
+
+    }
+    setLoading(false)
+
   }
 
   return (
     <Container>
       <Content>
         <Title>Buscas em sistemas P2P</Title>
-        {JSON.stringify(fileText)}
+        {/* {JSON.stringify(fileText)} */}
 
         <ContentSide>
 
           <LeftSide>
-            {fileText && <GraphView fileText={fileText} />}
+            {fileText && !loading && <GraphView fileText={fileText} path={path} />}
 
           </LeftSide>
           <RightSide>

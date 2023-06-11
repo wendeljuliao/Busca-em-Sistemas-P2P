@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import Graph from 'react-vis-network-graph'
 import { Container } from './styles'
 
-export function GraphView({ fileText }) {
+export function GraphView({ fileText, path}) {
+
     const [graphData, setGraphData] = useState({
         nodes: Array.from({ length: fileText.num_nodes }, (v, index) => {  
             return {id: index + 1,
@@ -16,7 +17,8 @@ export function GraphView({ fileText }) {
             return {
                 from: parseInt(e0.replace('n', '').trim()),
                 to: parseInt(e1.replace('n', '').trim()),
-                color: 'yellow'
+                color: 'yellow',
+                width: 1
             }
         }),
       });
@@ -64,7 +66,8 @@ export function GraphView({ fileText }) {
             arrows: {
                 to: { enabled: false },
                 from: { enabled: false }
-            }
+            },
+            width: 1
         },
         height: "100%",
     }
@@ -77,42 +80,97 @@ export function GraphView({ fileText }) {
         
     };
 
-    useEffect(() => {
-        // Função para animar o gráfico
-        const animateGraph = () => {
-          const updatedGraphData = {
+    function animateGraph(nodeId) {
+        const updatedGraphData = {
+          nodes: [...graphData.nodes],
+          edges: [...graphData.edges],
+        };
+
+        const extractedId = parseInt(nodeId.replace('n', ''))
+        
+        // Faz alguma alteração nos dados do gráfico
+        // Neste exemplo, estamos mudando a cor dos nós em um loop contínuo
+        /* const updatedNodes = updatedGraphData.nodes.map((node) => {
+          return {
+              ...node,
+              font: {
+              color: 'red'
+          }}
+        });
+
+        const updatedEdges = updatedGraphData.edges.map((edge) => {
+          return {
+              ...edge,
+              color: 'white',
+              width: 3
+          }
+        }); */
+
+        const node = updatedGraphData.nodes.find((node) => node.id === extractedId);
+/*         const edge = updatedGraphData.edges.find((edge) => edge.from === 1);
+ */
+        const updatedNode = { ...node, font: {color: 'red'} }
+/*         const updatedEdge = { ...edge, color: 'white', width: 3}
+ */
+        const updatedGraph = { 
+                          nodes: [...updatedGraphData.nodes, updatedNode],
+                          edges: [...updatedGraphData.edges]
+                          /* edges: [...updatedGraphData.edges, updatedEdge]  */
+                        }
+
+        setGraphData(updatedGraph);
+      }
+
+    async function reset() {
+
+        const updatedGraphData = {
             nodes: [...graphData.nodes],
             edges: [...graphData.edges],
           };
-    
-          // Faz alguma alteração nos dados do gráfico
-          // Neste exemplo, estamos mudando a cor dos nós em um loop contínuo
-          const updatedNodes = updatedGraphData.nodes.map((node) => {
+
+        const updatedNodes = updatedGraphData.nodes.map((node) => {
             return {
                 ...node,
                 font: {
-                color: 'red'
+                color: 'yellow'
             }}
           });
 
-          const updatedEdges = updatedGraphData.edges.map((edge) => {
-            return {
-                ...edge,
-                color: 'white'
-            }
-          });
+        
+        const updatedGraph = { 
+            nodes: [...updatedNodes],
+            edges: [...graphData.edges]
+            /* edges: [...updatedGraphData.edges, updatedEdge]  */
+        }
 
-          setGraphData({nodes: updatedNodes, edges: updatedEdges});
-        };
-    
-        // Define um intervalo para a animação
-        const animationInterval = setInterval(animateGraph, 1000);
-    
-        // Limpa o intervalo quando o componente é desmontado
+        setGraphData(updatedGraph);
+    }
+
+    useEffect(() => {
+        // reset();
+/*         for (let i = 0; i < path.length; i++) {
+            setInterval(animateGraph(path[i]), 1000);
+
+        } */
+
+        let currentIndex = 0;
+
+        const interval = setInterval(() => {
+            if (currentIndex < path.length) {
+                animateGraph(path[currentIndex]);
+                currentIndex++;
+            } else {
+                clearInterval(interval); // Limpa o intervalo quando o laço for concluído
+            }
+            console.log("teste")
+        }, 1000);
+
+/*         const animationInterval = setInterval(animateGraph, 1000);
+ */    
         return () => {
-          clearInterval(animationInterval);
-        };
-      }, [graphData]);
+          clearInterval(interval);
+        }; 
+      }, [path]);
 
   return (
     <Container>

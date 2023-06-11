@@ -100,7 +100,7 @@ function checkGraphPartition(edges: Edge[], numNodes: number): boolean{
         let destPos = -1;
 
 
-        for(let [i, conn] of connections.entries()){
+        for(const [i, conn] of connections.entries()){
             if(originPos !== -1 && destPos !== -1)
                 break;
             
