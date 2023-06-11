@@ -59,20 +59,20 @@ export default class Graph {
     }
 
     isInCache(nodeName: string, targetResource: string): string | null {
-        for(const node of Object.keys(this.graph[nodeName].cache)){
-            if(this.graph[nodeName].cache[node] && this.graph[nodeName].cache[node].has(targetResource))
+        for(const node of Object.keys(this.graph['n1'].cache)){
+            if(this.graph['n1'].cache[node] && this.graph['n1'].cache[node].has(targetResource))
                 return node;
         }
 
         return null;
     }
 
-    addToCache(nodeName: string, targetNode: string, resource: string): void {
-        if(this.graph[nodeName].cache[targetNode])
-            this.graph[nodeName].cache[targetNode].add(resource);
+    addToCache(nodeName: string, targetNode: string, resources: string[]): void {
+        if(targetNode in this.graph[nodeName].cache)
+            this.graph[nodeName].cache[targetNode] = new Set([...this.graph[nodeName].cache[targetNode], ...resources]);
         else{
-            this.graph[nodeName].cache[targetNode] = new Set<string>;
-            this.graph[nodeName].cache[targetNode].add(resource);
+            this.graph[nodeName].cache[targetNode] = new Set(resources);
+            this.graph[nodeName].cache[targetNode] = new Set([...this.graph[nodeName].cache[targetNode], ...resources]);
         }
     }
 }

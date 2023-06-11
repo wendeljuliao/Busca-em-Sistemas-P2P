@@ -59,11 +59,13 @@ export function cacheFloodSearch(graph: Graph, startNode: string, targetResource
             continue;
         }
 
+        const lastNode = Array.from(visited).pop();
+
         visited.add(node);
         console.log("Visitando nó", node);
         nodeVisited++;
-
-        const cacheNode = graph.isInCache(node, targetResource);
+        
+        const cacheNode = graph.isInCache('n6', targetResource);
 
         if(cacheNode) {
             return { node: cacheNode, visited: nodeVisited, path: Array.from(visited.values()) };
@@ -71,7 +73,7 @@ export function cacheFloodSearch(graph: Graph, startNode: string, targetResource
 
         let resources = graph.getResources(node);
 
-        graph.addToCache(node, node, targetResource);
+        graph.addToCache('n1', node, resources);
 
         if(resources.includes(targetResource)) {
             return { node, visited: nodeVisited, path: Array.from(visited.values()) };

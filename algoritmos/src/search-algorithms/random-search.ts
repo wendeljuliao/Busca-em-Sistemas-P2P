@@ -68,7 +68,7 @@ export function cacheRandomSearch(
         visited.add(node);
         console.log("Visitando nó", node)
   
-        const cacheNode = graph.isInCache(node, targetResource);
+        const cacheNode = graph.isInCache('n1', targetResource);
   
         if(cacheNode) {
             return { node: cacheNode, visited: visited.size, path: Array.from(visited.values()) };
@@ -76,7 +76,7 @@ export function cacheRandomSearch(
   
         let resources = graph.getResources(node);
         
-        graph.addToCache(node, node, targetResource);
+        graph.addToCache('n1', node, resources);
   
         if(resources.includes(targetResource)) {
             return { node, visited: visited.size - 1, path: Array.from(visited.values()) };

@@ -7,7 +7,11 @@ async function main() {
     const filePath = path.resolve('./config.json');
     const jsonData = await loadGraphConfig(filePath);
     console.log("Arquivo de configuração carregado:", jsonData);
-    validateConfigFile(jsonData!)
+    const validationErrors = validateConfigFile(jsonData!)
+
+    if(validationErrors){
+        //TODO imprimir erros na GUI.
+    }
 
     const p2pGraph = await createP2PGraph(jsonData!);
 
@@ -25,10 +29,10 @@ async function main() {
     // console.log(cacheFloodSearchResult2);
 
     // 4- CACHE RANDOM SEARCH
-    const found = cacheRandomSearch(p2pGraph, 'n1', 'r10', 20);
-    console.log(found);
-    const found2 = cacheRandomSearch(p2pGraph, 'n1', 'r10', 20);
-    console.log(found2);
+    const cacheRandomSearchResult = cacheRandomSearch(p2pGraph, 'n1', 'r10', 20);
+    console.log(cacheRandomSearchResult);
+    const cacheRandomSearchResult2 = cacheRandomSearch(p2pGraph, 'n1', 'r10', 20);
+    console.log(cacheRandomSearchResult2);
 }
 
 main();
