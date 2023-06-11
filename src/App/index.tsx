@@ -78,6 +78,7 @@ function App() {
     }
 
     if (!nodeID || !resourceID || !TTL) {
+      setLoading(false)
       return alert('Há campos em branco.')
     }
 
