@@ -22,13 +22,17 @@ function App() {
   const [nodeFound, setNodeFound] = useState([])
   const [path, setPath] = useState([])
   const [visited, setVisited] = useState(0)
+  const [messages, setMessages] = useState(0)
+
+  const [p2pGraph, setP2pGraph] = useState();
 
   function handleFileChange(event: any) {
     setLoading(true)
+    resetVariables();
     const file = event.target.files[0];
     const reader = new FileReader();
 
-    reader.onload = (e: any) => {
+    reader.onload = async (e: any) => {
       const content = e.target.result;
       const lines = content.split('\n');
 
@@ -65,6 +69,8 @@ function App() {
       }
       setLoading(false)
 
+      const auxp2pGraph = await createP2PGraph(obj)
+      setP2pGraph(auxp2pGraph)
       setFileText(obj);
 
     };
@@ -72,19 +78,30 @@ function App() {
     reader.readAsText(file);
   }
 
+  function resetVariables() {
+    setNodeFound([])
+    setPath([])
+    setVisited(0)
+    setMessages(0)
+  }
+
   async function executeSearch() {
-    setLoading(true)
+
+    await setLoading(true)
     if (!fileText) {
+      resetVariables()
+      await setLoading(false)
       return alert('Arquivo não selecionado.')
     }
 
     if (!nodeID || !resourceID || !TTL) {
-      setLoading(false)
+      resetVariables()
+      await setLoading(false)
       return alert('Há campos em branco.')
     }
 
 
-    const p2pGraph = await createP2PGraph(fileText)
+    // const p2pGraph = await createP2PGraph(fileText)
 
     let search: any;
 
@@ -123,8 +140,9 @@ function App() {
     setNodeFound(search.node)
     setPath(search.path)
     setVisited(search.visited)
+    setMessages(search.messages)
 
-    setLoading(false)
+    await setLoading(false)
   }
 
   return (
@@ -172,8 +190,9 @@ function App() {
 
             {path.length > 0 &&
               <ContentPath>
-                <p>Caminho: {path.join(' => ')}</p>
+                {/* <p>Caminho: {path.join(' => ')}</p> */}
                 <p>Nº de nós visitados: {visited}</p>
+                <p>Nº de mensagens trocadas: {messages}</p>
                 <p>{nodeFound ? `Encontrou o recurso no ${nodeFound}` : 'Recurso não encontrado'}</p>
               </ContentPath>}
           </RightSide>

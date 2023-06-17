@@ -8,7 +8,7 @@ export function GraphView({ fileText, path}) {
         nodes: Array.from({ length: fileText.num_nodes }, (v, index) => {  
             return {id: index + 1,
                     label: `Node ${index + 1}`,
-                    title: '',
+                    title: fileText.resources[`n${index+1}`].join(),
                     font: {color: "red"}
                 }
         }),
