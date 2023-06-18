@@ -6,8 +6,8 @@ import { ButtonStyle, Container, Content, ContentPath, ContentSide, LeftSide, Ri
 import { validationGrafo } from '../utils/validationGrafo';
 import { GraphView } from '../components/Graph';
 import { createP2PGraph } from '../utils/util';
-import { cacheFloodSearch, floodSearch } from '../search-algorithms/flood-search';
-import { cacheRandomSearch, randomSearch } from '../search-algorithms/random-search';
+import { cachedFloodSearch, floodSearch } from '../search-algorithms/flood-search';
+import { cachedRandomSearch2, randomSearch2 } from '../search-algorithms/random-search';
 
 function App() {
   const [loading, setLoading] = useState(false)
@@ -116,7 +116,7 @@ function App() {
 
       console.log('Informed Flooding')
 
-      search = cacheFloodSearch(p2pGraph, nodeID, resourceID, parseInt(TTL));
+      search = cachedFloodSearch(p2pGraph, nodeID, resourceID, parseInt(TTL));
 
 
 
@@ -124,14 +124,14 @@ function App() {
 
       console.log('Random Walk')
 
-      search = randomSearch(p2pGraph, nodeID, resourceID, parseInt(TTL));
+      search = randomSearch2(p2pGraph, nodeID, resourceID, parseInt(TTL));
 
 
     } else {
 
       console.log('Informed Random Walk')
 
-      search = cacheRandomSearch(p2pGraph, nodeID, resourceID, parseInt(TTL));
+      search = cachedRandomSearch2(p2pGraph, nodeID, resourceID, parseInt(TTL));
 
 
     }

@@ -17,7 +17,7 @@ export default class Graph {
 
     addNode(nodeName: string, resources: string[] = []): void {
         if (!this.graph[nodeName]) {
-            this.graph[nodeName] = { neighbors: [], resources: resources, cache: {} };
+            this.graph[nodeName] = { neighbors: [], resources: resources, cache: new Map() };
         }
     }
 

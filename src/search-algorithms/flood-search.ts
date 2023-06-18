@@ -5,6 +5,7 @@ type SearchNode = {
     depth: number;
 };
 
+
 export function floodSearch(graph: Graph, startNode: string, targetResource: string, TTL: number): { node: string | null, visited: number, path: Array<any> } {
     if (TTL === 0) {
         return { node: null, visited: 0, path: [] };
@@ -44,6 +45,81 @@ export function floodSearch(graph: Graph, startNode: string, targetResource: str
 
             const neighbors = graph.getNeighbors(node);
             for (const neighbor of neighbors) {
+                queue.push({ node: neighbor, depth: 0 });
+            }
+
+            TTL -= 1;
+            return search();
+        }
+
+        return { node: nodeResourceFound, visited: visited.size, path: Array.from(visited.values()), messages };
+    }
+
+    return search();
+}
+
+export function cachedFloodSearch(graph: Graph, startNode: string, targetResource: string, TTL: number): { node: string | null, visited: number, path: Array<any> } {
+    if (TTL === 0) {
+        return { node: null, visited: 0, path: [] };
+    }
+
+    TTL += 1;
+    const visited = new Set<string>();
+    let messages = -1;
+    const queue: SearchNode[] = [{ node: startNode, depth: 0 }];
+
+    let nodeResourceFound: string | null = null
+
+    function search(): { node: string | null, visited: number, path: Array<any>, messages: number } {
+        if (queue.length === 0 || TTL === 0) {
+            return { node: nodeResourceFound, visited: visited.size, path: Array.from(visited.values()), messages };
+        }
+
+        const current = queue.shift();
+        if (current) {
+            const { node } = current;
+            
+            if (visited.has(node)) {
+                return search();
+            }
+            messages += 1;
+
+            visited.add(node);
+            console.log("Visitando nó", node);
+            const resources = graph.getResources(node);
+
+            if (resources.includes(targetResource)) {
+                nodeResourceFound = node;
+                TTL -= 1;
+                return search();
+                // return { node, visited: visited.size - 1, path: Array.from(visited.values()) };
+            }
+
+            
+            const nodeCache = graph.getNodeCache(node);
+
+            if(nodeCache.has(targetResource)){
+                messages+=1;
+                return { node: nodeCache.get(targetResource), visited: visited.size, path: Array.from(visited.values()), messages };
+            }
+
+
+            const neighbors = graph.getNeighbors(node);
+            const lastNodes = extractNumbers(node)[0];
+            for(let i=1; i <= Number(lastNodes); i++){
+                const auxNodeCache = graph.getNodeCache(`n${i}`);
+                for (const neighbor of neighbors) {
+                    const tmpResources = graph.getResources(neighbor);
+                    for(const tmpResource of tmpResources) {
+                        auxNodeCache.set(tmpResource, neighbor)
+                    }
+                }
+            }
+            for (const neighbor of neighbors) {
+                const tmpResources = graph.getResources(neighbor);
+                for(const tmpResource of tmpResources) {
+                    nodeCache.set(tmpResource, neighbor)
+                }
                 queue.push({ node: neighbor, depth: 0 });
             }
 
@@ -145,4 +221,10 @@ export function cacheFloodSearch(graph: Graph, startNode: string, targetResource
     }
 
     return { node: null, visited: nodeVisited , path: Array.from(visited.values()) };
+}
+
+function extractNumbers(input: string): number[] {
+    const regex = /\d+/g;
+    const matches = input.match(regex);
+    return matches ? matches.map(Number) : [];
 }
