@@ -16,7 +16,13 @@ export function cachedRandomSearch2(graph: Graph, startNode: string, targetResou
   let messages = -1;
   const queue: SearchNode[] = [{ node: startNode, depth: 0 }];
 
-  let nodeResourceFound: string | null = null
+  let nodeResourceFound: string | null = null;
+  let enableCache = false;
+
+  const testCache = graph.getNodeCache("n1");
+  if(testCache.size !== 0){
+    enableCache = true;
+  }
 
   function search(): { node: string | null, visited: number, path: Array<any>, messages: number } {
       if (queue.length === 0 || TTL === 0) {
@@ -25,9 +31,14 @@ export function cachedRandomSearch2(graph: Graph, startNode: string, targetResou
 
       TTL -=1;
 
+      
+
       const current = queue.shift();
       if (current) {
           const { node } = current;
+
+
+
           
           if (visited.has(node)) {
               return search();
@@ -46,7 +57,7 @@ export function cachedRandomSearch2(graph: Graph, startNode: string, targetResou
 
           const nodeCache = graph.getNodeCache(node);
 
-            if(nodeCache.has(targetResource)){
+            if(enableCache && nodeCache.has(targetResource)){
                 messages+=1;
                 return { node: nodeCache.get(targetResource), visited: visited.size, path: Array.from(visited.values()), messages };
             }
